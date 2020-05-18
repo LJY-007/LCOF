@@ -18,7 +18,6 @@ double findMedian() - 返回目前所有元素的中位数。
 ```c++
 class MedianFinder {
 public:
-    /** initialize your data structure here. */
     MedianFinder() {}
     
     void addNum(int num) {
