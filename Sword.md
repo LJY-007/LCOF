@@ -1,9 +1,50 @@
 ## Table of Contents
 |序号|题目|难度|标签|
 |:-:|:-|:-:|:-|
+|9|[用两个栈实现队列](#9-用两个栈实现队列)|Easy|`栈` `队列`|
 |41|[数据流中的中位数](#41-数据流中的中位数)|Hard|`堆` `排序`|
 |51|[数组中的逆序对](#51-数组中的逆序对)|Hard|`归并算法` `逆序对`|
 
+### 9. 用两个栈实现队列
+🥉用两个栈实现一个队列。队列的声明如下，请实现它的两个函数 appendTail 和 deleteHead ，分别完成在队列尾部插入整数和在队列头部删除整数的功能。(若队列中没有元素，deleteHead 操作返回 -1 )
+```
+输入：["CQueue","appendTail","deleteHead","deleteHead"] [[],[3],[],[]]
+输出：[null,null,3,-1]
+```
+---
+
+标签: `栈` `队列`<br>
+时间复杂度:`O(1)` 空间复杂度:`O(N)`
+```c++
+class CQueue {
+public:
+    CQueue() {}
+    
+    void appendTail(int value) {
+        //🪁使用双栈实现数据的逆序存放,从而栈顶为队列首部元素
+        stack<int> temp;
+        while (!data.empty()) {
+            temp.push(data.top());
+            data.pop();
+        }
+        data.push(value);
+        while (!temp.empty()) {
+            data.push(temp.top());
+            temp.pop();
+        }
+    }
+    
+    int deleteHead() {
+        if (data.empty()) return -1;
+        int top = data.top();
+        data.pop();
+        return top;
+    }
+
+private:
+    stack<int> data;
+};
+```
 
 ### 41. 数据流中的中位数
 🏅️如何得到一个数据流中的中位数？如果从数据流中读出奇数个数值，那么中位数就是所有数值排序之后位于中间的数值。如果从数据流中读出偶数个数值，那么中位数就是所有数值排序之后中间两个数的平均值。<br>
