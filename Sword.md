@@ -2,6 +2,7 @@
 |序号|题目|难度|标签|LeetCode|
 |:-:|:-|:-:|:-|:-:|
 |9|[用两个栈实现队列](#9-用两个栈实现队列)|Easy|`栈` `队列`|~|
+|29|[顺时针打印矩阵](#29-顺时针打印矩阵)|Easy|`数组`|54|
 |30|[包含min函数的栈](#30-包含min函数的栈)|Easy|`栈`|155|
 |41|[数据流中的中位数](#41-数据流中的中位数)|Hard|`堆` `排序`|295|
 |51|[数组中的逆序对](#51-数组中的逆序对)|Hard|`归并算法` `逆序对`|~|
@@ -74,10 +75,53 @@ private:
 ### 26.
 ### 27.
 ### 28.
-### 29.
-### 30. 包含min函数的栈
+
+### 29. 顺时针打印矩阵
+🥉输入一个矩阵，按照从外向里以顺时针的顺序依次打印出每一个数字。
 ```
-定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的 min 函数在该栈中，调用 min、push 及 pop 的时间复杂度都是 O(1)。
+输入：matrix = [[1,2,3],[4,5,6],[7,8,9]] 输出：[1,2,3,6,9,8,7,4,5]
+输入：matrix = [[1,2,3,4],[5,6,7,8],[9,10,11,12]] 输出：[1,2,3,4,8,12,11,10,9,5,6,7]
+```
+---
+
+标签: `数组`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(1)`
+```c++
+class Solution {
+public:
+    vector<int> spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> res;
+        if (matrix.empty()) return res;
+        int x1 = 0, y1 = 0;
+        int x2 = matrix.size() - 1, y2 = matrix[0].size() - 1;
+
+        while (x1 <= x2 && y1 <= y2) {
+            int x = x1, y = y1;
+            //🪁每次只遍历最外边的一圈,单独处理只有一行或一列的情况
+            if (x1 == x2) {
+                while (y <= y2) res.push_back(matrix[x1][y++]);
+            } else if (y1 == y2) {
+                while (x <= x2) res.push_back(matrix[x++][y1]);
+            } else {
+                while (y != y2) res.push_back(matrix[x1][y++]);
+                while (x != x2) res.push_back(matrix[x++][y2]);
+                while (y != y1) res.push_back(matrix[x2][y--]);
+                while (x != x1) res.push_back(matrix[x--][y1]);
+            }
+            x1++; y1++; x2--; y2--;
+        }
+        return res;
+    }
+};
+```
+
+### 30. 包含min函数的栈
+🥉定义栈的数据结构，请在该类型中实现一个能够得到栈的最小元素的 min 函数在该栈中，调用 min、push 及 pop 的时间复杂度都是 O(1)。
+```
+push(x) —— 将元素 x 推入栈中。
+pop() —— 删除栈顶的元素。
+top() —— 获取栈顶元素。
+min() —— 检索栈中的最小元素。
 ```
 ---
 
@@ -121,6 +165,7 @@ private:
 void addNum(int num) - 从数据流中添加一个整数到数据结构中。
 double findMedian() - 返回目前所有元素的中位数。
 ```
+---
 
 标签: `堆` `排序`<br>
 时间复杂度:`O(logN)` 空间复杂度:`O(N)`
