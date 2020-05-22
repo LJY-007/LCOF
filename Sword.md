@@ -1,15 +1,15 @@
 ## Table of Contents
 |序号|题目|难度|标签|LeetCode|
 |:-:|:-|:-:|:-|:-:|
-|1|[]()||||
+|1|[赋值运算符函数]()||||
 |2|[]()||||
 |3|[]()||||
 |4|[二维数组中的查找](#4-二维数组中的查找)|Easy|`数组`|240|
 |5|[]()||||
-|6|[]()||||
+|6|[从尾到头打印链表](#6-从尾到头打印链表)|Easy|`链表` `数组` `栈` `递归`||
 |7|[]()||||
 |8|[]()||||
-|9|[用两个栈实现队列](#9-用两个栈实现队列)|Easy|`栈` `队列`|~|
+|9|[用两个栈实现队列](#9-用两个栈实现队列)|Easy|`栈` `队列`|～|
 |10|[]()||||
 |11|[]()||||
 |12|[]()||||
@@ -18,11 +18,11 @@
 |15|[]()||||
 |16|[]()||||
 |17|[]()||||
-|18|[]()||||
+|18|[删除链表的节点](#18-删除链表的节点)|Easy|`链表`|203|
 |19|[]()||||
 |20|[]()||||
 |21|[]()||||
-|22|[]()||||
+|22|[链表中倒数第k个节点](#22-链表中倒数第k个节点)|Easy|`链表` `双指针`|～|
 |23|[]()||||
 |24|[反转链表](#24-反转链表)|Easy|`链表`|206|
 |25|[]()||||
@@ -122,7 +122,102 @@ public:
 ```
 
 ### 5.
-### 6.
+
+### 6. 从尾到头打印链表
+🥉输入一个链表的头节点，从尾到头反过来返回每个节点的值（用数组返回）。
+```
+输入：head = [1,3,2] 输出：[2,3,1]
+```
+---
+
+标签: `链表`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Solution {
+public:
+    vector<int> reversePrint(ListNode* head) {
+        ListNode *new_head = NULL;
+        //🪁反转链表后再次遍历并输出val(修改了链表结构)
+        while (head) {
+            ListNode *temp = head->next;
+            head->next = new_head;
+            new_head = head;
+            head = temp;
+        }
+        vector<int> res;
+        while (new_head) {
+            res.push_back(new_head->val);
+            new_head = new_head->next;
+        }
+        return res;
+    }
+};
+```
+
+标签: `链表` `数组`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Solution {
+public:
+    vector<int> reversePrint(ListNode* head) {
+        ListNode *curr = head;
+        int len = 0;
+        //🪁遍历链表建立等长的数组,再次遍历输出对应(相反)位置的值
+        while (curr) {
+            len++;
+            curr = curr->next;
+        }
+        vector<int> res(len);
+        curr = head;
+        while (curr) {
+            res[--len] = curr->val;
+            curr = curr->next;
+        }
+        return res;
+    }
+};
+```
+
+标签: `链表` `栈`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Solution {
+public:
+    vector<int> reversePrint(ListNode* head) {
+        //🪁使用栈结构遍历压入链表结点后依次弹出并打印
+        stack<ListNode*> nodes;
+        while (head) {
+            nodes.push(head);
+            head = head->next;
+        }
+        vector<int> res;
+        while (!nodes.empty()) {
+            res.push_back(nodes.top()->val);
+            nodes.pop();
+        }
+        return res;
+    }
+};
+```
+
+标签: `链表` `递归`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Solution {
+public:
+    vector<int> reversePrint(ListNode* head) {
+        if (!head) return res;
+        //🪁递归方法(本质与栈相同)实现链表的打印
+        reversePrint(head->next);
+        res.push_back(head->val);
+        return res;
+    }
+
+private:
+    vector<int> res;
+};
+```
+
 ### 7.
 ### 8.
 
@@ -176,12 +271,92 @@ private:
 ### 15.
 ### 16.
 ### 17.
-### 18.
+
+### 18. 删除链表的节点
+🥉给定单向链表的头指针和一个要删除的节点的值，定义一个函数删除该节点。返回删除后的链表的头节点。
+```
+输入: head = [4,5,1,9], val = 5 输出: [4,1,9]
+```
+---
+
+标签: `链表`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(1)`
+```c++
+class Solution {
+public:
+    ListNode* deleteNode(ListNode* head, int val) {
+        ListNode pre_node(0); //新建头结点便于对第一个结点的操作
+        ListNode *curr = &pre_node;
+        curr->next = head;
+        while (curr->next) {
+            if (curr->next->val == val) {
+                curr->next = curr->next->next;
+                break;
+            }
+            curr = curr->next;
+        }
+        return pre_node.next;
+    }
+};
+```
+
 ### 19.
 ### 20.
 
 ### 21.
-### 22.
+
+### 22. 链表中倒数第k个节点
+🥉输入一个链表，输出该链表中倒数第k个节点。为了符合大多数人的习惯，本题从1开始计数，即链表的尾节点是倒数第1个节点。例如，一个链表有6个节点，从头节点开始，它们的值依次是1、2、3、4、5、6。这个链表的倒数第3个节点是值为4的节点。
+```
+给定一个链表: 1->2->3->4->5, 和 k = 2.
+返回链表 4->5.
+```
+---
+
+标签: `链表`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(1)`
+```c++
+class Solution {
+public:
+    ListNode* getKthFromEnd(ListNode* head, int k) {
+        if (k <= 0) return NULL;
+        //🪁遍历链表得到倒数第k个结点的顺序数
+        ListNode *curr = head;
+        int len = 0;
+        while (curr) {
+            len++;
+            curr = curr->next;
+        }
+        if (len < k) return NULL;
+        curr = head;
+        for (int i = len - k; i != 0; i--) curr = curr->next;
+        return curr;
+    }
+};
+```
+
+标签: `链表` `双指针`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(1)`
+```c++
+class Solution {
+public:
+    ListNode* getKthFromEnd(ListNode* head, int k) {
+        ListNode *fast = head, *slow = head;
+        if (k <= 0) return NULL;
+        //🪁维持双指针跨度为k个结点并同时向后遍历,当快指针到达最后一个结点时返回慢指针
+        while (--k) {
+            fast = fast->next;
+            if (!fast) return NULL;
+        }
+        while (fast->next) {
+            slow = slow->next;
+            fast = fast->next;
+        }
+        return slow;
+    }
+};
+```
+
 ### 23.
 
 ### 24. 反转链表
@@ -308,7 +483,7 @@ private:
 ```
 ---
 
-标签: `链表`<br>
+标签: `链表` `哈希表`<br>
 时间复杂度:`O(N)` 空间复杂度:`O(N)`
 ```c++
 class Solution {
@@ -329,6 +504,41 @@ public:
             head = head->next;
         }
         new_head = nodes[new_head];
+        return new_head;
+    }
+};
+```
+
+标签: `链表`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Solution {
+public:
+    Node* copyRandomList(Node* head) {
+        if (!head) return head;
+        Node *new_head = head;
+        //🪁遍历整个链表,在每个结点的后面新建对应的复制结点
+        while (head) {
+            Node *temp = head->next;
+            head->next = new Node(head->val);
+            head->next->next = temp;
+            head = temp;
+        }
+        //🪁遍历链表完成内部指针关系的复制(每两个结点一组,next节点的random指向当前节点的random的next)
+        head = new_head;
+        while (head) {
+            if (head->random) head->next->random = head->random->next; //注意random为空的情况
+            head = head->next->next;
+        }
+        //🪁复制完成后要分离链表,不影响原链表结构
+        head = new_head;
+        new_head = new_head->next;
+        while (head) {
+            Node *temp = head->next->next;
+            if (temp) head->next->next = temp->next; //注意最后一个两个结点的分离
+            head->next = temp;
+            head = temp;
+        }
         return new_head;
     }
 };
