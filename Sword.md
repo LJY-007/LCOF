@@ -57,7 +57,8 @@
 |52|[两个链表的第一个公共节点](#52-两个链表的第一个公共节点)|Easy|`链表`|160|
 |53|[]()||||
 |54|[]()||||
-|55|[]()||||
+|55-I|[二叉树的深度 I](#55-I-二叉树的深度-I)|Easy||104|
+|55-II|[]()||||
 |56|[]()||||
 |57|[]()||||
 |58|[]()||||
@@ -989,7 +990,57 @@ public:
 
 ### 53.
 ### 54.
-### 55.
+
+### 55-I. 二叉树的深度
+🥉输入一棵二叉树的根节点，求该树的深度。从根节点到叶节点依次经过的节点（含根、叶节点）形成树的一条路径，最长路径的长度为树的深度。
+```
+给定二叉树: [3,9,20,null,null,15,7] 返回: 3 
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+---
+
+标签: `二叉树` `DFS`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if (!root) return 0;
+        //🪁树的深度等于其左子树深度与右子树深度的最大值+1
+        return max(maxDepth(root->left), maxDepth(root->right)) + 1;
+    }
+};
+```
+
+标签: `二叉树` `BFS`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Solution {
+public:
+    int maxDepth(TreeNode* root) {
+        if (!root) return 0;
+        //🪁使用BFS进行层序遍历时记录最终的层数即为最大深度
+        int res = 0;
+        queue<TreeNode*> nodes;
+        nodes.push(root);
+        while (!nodes.empty()) {
+            res++;
+            int len = nodes.size();
+            while (len--) {
+                if (nodes.front()->left) nodes.push(nodes.front()->left);
+                if (nodes.front()->right) nodes.push(nodes.front()->right);
+                nodes.pop();
+            }
+        }
+        return res;
+    }
+};
+```
+### 55-II. 
 ### 56.
 ### 57.
 ### 58.
