@@ -32,7 +32,8 @@
 |29|[顺时针打印矩阵](#29-顺时针打印矩阵)|Easy|`数组`|54|
 |30|[包含min函数的栈](#30-包含min函数的栈)|Easy|`栈`|155|
 |31|[]()||||
-|32|[]()||||
+|32-I|[从上到下打印二叉树 I](#32-I-从上到下打印二叉树-I)||||
+|32-II|[从上到下打印二叉树 II](#32-II-从上到下打印二叉树-II)|Easy||102|
 |33|[]()||||
 |34|[]()||||
 |35|[复杂链表的复制](#35-复杂链表的复制)|Medium|`链表` `哈希表`|138|
@@ -576,7 +577,53 @@ private:
 ```
 
 ### 31.
-### 32.
+
+### 32-II. 从上到下打印二叉树 II
+🥉从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印到一行。
+```
+给定二叉树: [3,9,20,null,null,15,7] 
+    3
+   / \
+  9  20
+    /  \
+   15   7
+返回其层次遍历结果:
+[
+  [3],
+  [9,20],
+  [15,7]
+]
+```
+
+---
+
+标签: `二叉树` `BFS`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if (!root) return res;
+        //🪁利用队列FIFO的特点对每一层进行迭代输出
+        queue<TreeNode*> nodes;
+        nodes.push(root);
+        while (!nodes.empty()) {
+            int len = nodes.size();
+            vector<int> temp;
+            while (len--) {
+                temp.push_back(nodes.front()->val);
+                if (nodes.front()->left) nodes.push(nodes.front()->left);
+                if (nodes.front()->right) nodes.push(nodes.front()->right);
+                nodes.pop();
+            }
+            res.push_back(temp);
+        }
+        return res;
+    }
+};
+```
+
 ### 33.
 ### 34.
 ### 35. 复杂链表的复制
