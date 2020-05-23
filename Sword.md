@@ -57,8 +57,8 @@
 |52|[两个链表的第一个公共节点](#52-两个链表的第一个公共节点)|Easy|`链表`|160|
 |53|[]()||||
 |54|[]()||||
-|55-I|[二叉树的深度 I](#55-I-二叉树的深度-I)|Easy||104|
-|55-II|[]()||||
+|55-I|[二叉树的深度 I](#55-I-二叉树的深度-I)|Easy|`二叉树` `DFS` `BFS`|104|
+|55-II|[平衡二叉树](#55-II-平衡二叉树)|Easy|`二叉树` `自顶向下` `自底向上`|110|
 |56|[]()||||
 |57|[]()||||
 |58|[]()||||
@@ -1040,7 +1040,65 @@ public:
     }
 };
 ```
-### 55-II. 
+### 55-II. 平衡二叉树
+🥉输入一棵二叉树的根节点，判断该树是不是平衡二叉树。如果某二叉树中任意节点的左右子树的深度相差不超过1，那么它就是一棵平衡二叉树。
+```
+给定二叉树: [3,9,20,null,null,15,7] 返回: true
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+---
+
+标签: `二叉树` `自顶向下` `先序遍历`<br>
+时间复杂度:`O(NlogN)` 空间复杂度:`O(N)`
+```c++
+class Solution {
+public:
+    bool isBalanced(TreeNode* root) {
+        if (!root) return true;
+        //🪁利用二叉树的深度计算,判断二叉树的每个结点的左子树和右子树是否平衡(高度差≤1)
+        int diff = maxDepth(root->left) - maxDepth(root->right);
+        if (diff > 1 || diff < -1) return false;
+        return isBalanced(root->left) && isBalanced(root->right);
+    }
+
+    //🪁DFS递归求二叉树的深度
+    int maxDepth(TreeNode* root) {
+        if (!root) return 0;
+        return max(maxDepth(root->left), maxDepth(root->right)) + 1;
+    }
+};
+```
+
+标签: `二叉树` `自底向上` `后序遍历`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Solution {
+public:
+    bool isBalanced(TreeNode* root) {
+        if (!root) return true;
+        return heightBalance(root) == -1 ? false : true;
+    }
+    
+    int heightBalance(TreeNode* root) {
+        if (!root) return 0;
+        //🪁如果左子树或右子树不平衡则直接返回-1(当前结点为根的树也不平衡)
+        int left = heightBalance(root->left);
+        if (left == -1) return -1;
+        int right = heightBalance(root->right);
+        if (right == -1) return -1;
+        //🪁如果当前结点的左右子树的高度差≤1则返回当前结点的高度,否则返回-1(不平衡)
+        return abs(left - right) < 2 ? max(left, right) + 1 : -1;
+    }
+};
+```
+
+
+
 ### 56.
 ### 57.
 ### 58.
