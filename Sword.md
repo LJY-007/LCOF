@@ -32,8 +32,9 @@
 |29|[顺时针打印矩阵](#29-顺时针打印矩阵)|Easy|`数组`|54|
 |30|[包含min函数的栈](#30-包含min函数的栈)|Easy|`栈`|155|
 |31|[]()||||
-|32-I|[从上到下打印二叉树 I](#32-I-从上到下打印二叉树-I)||||
-|32-II|[从上到下打印二叉树 II](#32-II-从上到下打印二叉树-II)|Easy||102|
+|32-I|[从上到下打印二叉树 I](#32-I-从上到下打印二叉树-I)|Medium|`二叉树` `BFS`|~|
+|32-II|[从上到下打印二叉树 II](#32-II-从上到下打印二叉树-II)|Easy|`二叉树` `BFS`|102|
+|32-III|[从上到下打印二叉树 III](#32-III-从上到下打印二叉树-III)|Medium|`二叉树` `BFS` `双端队列`|~|
 |33|[]()||||
 |34|[]()||||
 |35|[复杂链表的复制](#35-复杂链表的复制)|Medium|`链表` `哈希表`|138|
@@ -575,8 +576,42 @@ private:
     stack<int> mins;
 };
 ```
-
 ### 31.
+
+### 32-I. 从上到下打印二叉树 I
+🥈从上到下打印出二叉树的每个节点，同一层的节点按照从左到右的顺序打印。
+```
+给定二叉树: [3,9,20,null,null,15,7] 
+    3
+   / \
+  9  20
+    /  \
+   15   7
+返回: [3,9,20,15,7]
+```
+---
+
+标签: `二叉树` `BFS`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Solution {
+public:
+    vector<int> levelOrder(TreeNode* root) {
+        vector<int> res; 
+        if (!root) return res;
+        //🪁利用队列FIFO的特点对每一层进行迭代输出
+        queue<TreeNode*> nodes;
+        nodes.push(root);
+        while (!nodes.empty()) {
+            res.push_back(nodes.front()->val);
+            if (nodes.front()->left) nodes.push(nodes.front()->left);
+            if (nodes.front()->right) nodes.push(nodes.front()->right);
+            nodes.pop();
+        }
+        return res;
+    }
+};
+```
 
 ### 32-II. 从上到下打印二叉树 II
 🥉从上到下按层打印二叉树，同一层的节点按从左到右的顺序打印，每一层打印到一行。
@@ -617,6 +652,92 @@ public:
                 if (nodes.front()->right) nodes.push(nodes.front()->right);
                 nodes.pop();
             }
+            res.push_back(temp);
+        }
+        return res;
+    }
+};
+```
+
+### 32-III. 从上到下打印二叉树 III
+🥈请实现一个函数按照之字形顺序打印二叉树，即第一行按照从左到右的顺序打印，第二层按照从右到左的顺序打印，第三行再按照从左到右的顺序打印，其他行以此类推。
+```
+给定二叉树: [3,9,20,null,null,15,7]
+    3
+   / \
+  9  20
+    /  \
+   15   7
+返回其层次遍历结果: 
+[
+  [3],
+  [20,9],
+  [15,7]
+]
+```
+---
+
+标签: `二叉树` `BFS` `双端队列`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if (!root) return res;
+        //🪁使用双端队列在每一层的迭代间改变一次弹出和压入的头尾顺序
+        deque<TreeNode*> nodes;
+        nodes.push_back(root);
+        int layer = 0;
+        while (!nodes.empty()) {
+            layer++;
+            int len = nodes.size();
+            vector<int> temp;
+            if (layer & 1) {
+                while (len--) {
+                    temp.push_back(nodes.front()->val);
+                    if (nodes.front()->left) nodes.push_back(nodes.front()->left);
+                    if (nodes.front()->right) nodes.push_back(nodes.front()->right);
+                    nodes.pop_front();
+                }
+            } else {
+                while (len--) {
+                    temp.push_back(nodes.back()->val);
+                    if (nodes.back()->right) nodes.push_front(nodes.back()->right);
+                    if (nodes.back()->left) nodes.push_front(nodes.back()->left);
+                    nodes.pop_back();
+                }
+            }
+            res.push_back(temp);
+        }
+        return res;
+    }
+};
+```
+
+标签: `二叉树` `BFS` `队列` `数组`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        if (!root) return res;
+        //🪁使用队列对每一层进行迭代输出,当遇到偶数层时反转该层的数组
+        queue<TreeNode*> nodes;
+        nodes.push(root);
+        int layer = 0;
+        while (!nodes.empty()) {
+            layer++;
+            int len = nodes.size();
+            vector<int> temp;
+            while (len--) {
+                temp.push_back(nodes.front()->val);
+                if (nodes.front()->left) nodes.push(nodes.front()->left);
+                if (nodes.front()->right) nodes.push(nodes.front()->right);
+                nodes.pop();
+            }
+            if (!(layer & 1)) reverse(temp.begin(), temp.end());
             res.push_back(temp);
         }
         return res;
