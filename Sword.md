@@ -39,7 +39,7 @@
 |34|[]()||||
 |35|[复杂链表的复制](#35-复杂链表的复制)|Medium|`链表` `哈希表`|138|
 |36|[]()||||
-|37|[]()||||
+|37|[序列化二叉树](#37-序列化二叉树)|Hard|`二叉树` `BSF` `字符串` `IO流`|297|
 |38|[]()||||
 |39|[]()||||
 |40|[]()||||
@@ -856,7 +856,121 @@ public:
 ```
 
 ### 36.
-### 37.
+
+### 37. 序列化二叉树
+🏅️请实现两个函数，分别用来序列化和反序列化二叉树。
+```
+你可以将以下二叉树:
+
+    1
+   / \
+  2   3
+     / \
+    4   5
+序列化为: "[1,2,3,null,null,4,5]"
+```
+---
+
+标签: `二叉树` `BSF` `字符串`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Codec {
+public:
+    string serialize(TreeNode* root) {
+        //🪁BFS层序遍历二叉树,以字符串的形式存储结点的值(空节点的值为"null",以','分割)
+        string res;
+        queue<TreeNode*> nodes;
+        nodes.push(root);
+        while (!nodes.empty()) {
+            if (nodes.front()) {
+                res += to_string(nodes.front()->val) + ',';
+                nodes.push(nodes.front()->left);
+                nodes.push(nodes.front()->right);
+            } else {
+                res += "null,";
+            }
+            nodes.pop();
+        }
+        return res;
+    }
+    
+    TreeNode* deserialize(string data) {
+        //🪁将字符串以特定符号为界分割,并以此建立对应的结点(用指针数组存储)
+        vector<TreeNode*> nodes;
+        string temp = "";
+        for (auto c : data) {
+            if (c == ',') {
+                if (temp == "null") {
+                    nodes.push_back(NULL);
+                } else {
+                    nodes.push_back(new TreeNode(stoi(temp)));
+                }
+                temp = "";
+            } else {
+                temp += c;
+            }
+        }
+        
+        //🪁使用i,j两个下标分别表示当前结点与其左右子结点(当i指向空结点时,j不变)的位置
+        for (int i = 0, j = 1; j != nodes.size(); ++i) {
+            if (nodes[i]) {
+                nodes[i]->left = nodes[j++];
+                nodes[i]->right = nodes[j++];
+            } 
+        }
+        return nodes[0];
+    }
+};
+```
+
+标签: `二叉树` `BSF` `IO流`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Codec {
+public:
+    string serialize(TreeNode* root) {
+        //🪁BFS层序遍历二叉树,以输出流的形式存储结点的值(空节点的值为"null",以' '分割)
+        ostringstream output;
+        queue<TreeNode*> nodes;
+        nodes.push(root);
+        while (!nodes.empty()) {
+            if (nodes.front()) {
+                output << nodes.front()->val << ' '; //巧妙运用输出流避免了类型转换
+                nodes.push(nodes.front()->left);
+                nodes.push(nodes.front()->right);
+            } else {
+                output << "null ";
+            }
+            nodes.pop();
+        }
+        return output.str();
+    }
+
+    TreeNode* deserialize(string data) {
+        //🪁每次从输入流读取字符串(以' '分割),并以此建立对应的结点(用指针数组存储)
+        istringstream input(data);
+        string val;
+        vector<TreeNode*> nodes;
+        while (input >> val) {
+            if (val == "null") {
+                nodes.push_back(NULL);
+            } else {
+                nodes.push_back(new TreeNode(stoi(val)));
+            }
+        }
+        
+        //🪁使用i,j两个下标分别表示当前结点与其左右子结点(当i指向空结点时,j不变)的位置
+        for (int i = 0, j = 1; j != nodes.size(); ++i) {
+            if (nodes[i]) {
+                nodes[i]->left = nodes[j++];
+                nodes[i]->right = nodes[j++];
+            } 
+        }
+        return nodes[0];
+    }
+};
+```
+
 ### 38.
 ### 39.
 ### 40.
