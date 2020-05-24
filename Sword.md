@@ -7,7 +7,7 @@
 |4|[二维数组中的查找](#4-二维数组中的查找)|Easy|`数组`|240|
 |5|[]()||||
 |6|[从尾到头打印链表](#6-从尾到头打印链表)|Easy|`链表` `数组` `栈` `递归`|～|
-|7|[]()||||
+|7|[重建二叉树](#7-重建二叉树)|Medium|`二叉树` `中序遍历` `后序遍历` `哈希表` `递归`|105|
 |8|[二叉树的下一个结点](#8-二叉树的下一个结点)|Easy|`二叉树`|～|
 |9|[用两个栈实现队列](#9-用两个栈实现队列)|Easy|`栈` `队列`|232|
 |10|[]()||||
@@ -264,7 +264,45 @@ private:
 };
 ```
 
-### 7.
+### 7. 重建二叉树
+🥈输入某二叉树的前序遍历和中序遍历的结果，请重建该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。
+```
+给出: 前序遍历 preorder = [3,9,20,15,7] 中序遍历 inorder = [9,3,15,20,7]
+返回二叉树:
+
+    3
+   / \
+  9  20
+    /  \
+   15   7
+```
+---
+
+标签: `二叉树` `中序遍历` `后序遍历` `哈希表` `递归`<br>
+时间复杂度:`O(N)` 空间复杂度:`O(N)`
+```c++
+class Solution {
+public:
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        //🪁用哈希表记录中序遍历的值与下标,便于在递归中快速查找到根的位置
+        for (int i = 0; i != inorder.size(); ++i) indexs[inorder[i]] = i;
+        return recursiveBuild(preorder, 0, 0, inorder.size() - 1);
+    }
+
+    TreeNode* recursiveBuild(const vector<int>& preorder, int pre_root, int in_left, int in_right) {
+        if (in_left > in_right) return NULL;
+        //🪁建立根结点,并确定左右子树在前序遍历与中序遍历中的分割,之后连接根结点与左右子树
+        TreeNode *root = new TreeNode(preorder[pre_root]);
+        int in_root = indexs[preorder[pre_root]];
+        root->left = recursiveBuild(preorder, pre_root + 1, in_left, in_root - 1);
+        root->right = recursiveBuild(preorder, pre_root + in_root - in_left + 1, in_root + 1, in_right);
+        return root;
+    }
+
+private:
+    unordered_map<int, int> indexs;
+};
+```
 
 ### 8. 二叉树的下一个结点
 🥉给定一个二叉树和其中的一个结点，请找出中序遍历顺序的下一个结点并且返回。注意，树中的结点不仅包含左右子结点，同时包含指向父结点的指针。
